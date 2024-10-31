@@ -1,0 +1,25 @@
+Sequence Diagram:
+	participant browser
+	participant server
+
+	browser->>server: GET exampleapp/spa 
+	server-->>browser: HTML document
+
+	browser->>server: GET main.css
+	server-->>browser: CSS file
+
+	browser->>server: GET main.js
+	server-->>browser: js file
+
+	Note: browser execute the js code and fetch the json file
+
+	browser->>server: GET data.json
+	server-->>browser json file
+
+	Note: Now user write the note and click on save
+
+	browser->>server: POST exampleapp/new_note_spa
+	server-->>browser: server sends back response code
+
+	Note: the browser again render the json file and display all 
+objects.
