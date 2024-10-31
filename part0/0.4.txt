@@ -1,0 +1,13 @@
+Sequence Diagram
+	participant browser
+	participant server
+	
+	Note: user fill up the name then click on save
+	
+	browser->>server: POST exampleapp/new_note 
+	server-->>browser: REDIRECT GET exampleapp/notes
+	
+	Note: the browser again loads css and js file. then execute the js 
+file to load the json objects. Then it executes the callback function to 
+render the notes.
+	
