@@ -11,6 +11,7 @@ const App = () => {
   const [showAll, setShowAll] = useState(true)
   const [errorMessage, setErrorMessage] = useState(null)
 
+  //use effect runs once in lifetime of website, usestate render everytime state changes
   useEffect(()=>{
     noteService.getAll().then(data=>{
       setNotes(data)
@@ -28,8 +29,8 @@ const App = () => {
 
     const dummyNote = {
       
-      content: 'newNote',
-      important:Math.random()>0.5
+      content: newNote,
+      important:false
     }
 
     noteService

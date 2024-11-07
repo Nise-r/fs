@@ -1,8 +1,15 @@
 // const http = require('http')
+require('dotenv').config()
+
 const express = require('express')
 const app = express()
+const Note = require('./models/note')
 
+app.use(express.static('dist'))
 app.use(express.json())
+
+
+
 
 let notes = [
   {
@@ -25,17 +32,24 @@ let notes = [
 app.get('/',(request,response)=>{
 	response.send('<h1>Hello World</h1>')
 })
-app.get('/api/notes',(request,response)=>{
-	response.json(notes)
+app.get('/api/notes',(request,response,next)=>{
+	Note.find({}).then(notes=>{
+		response.json(notes)
+	}).catch(error=>next(error))
+	// response.json(notes)
 })
-app.get('/api/notes/:id',(request,response)=>{
+app.get('/api/notes/:id',(request,response,next)=>{
 	const id = request.params.id
-	const note = notes.find(n=>n.id===id)
+	// const note = notes.find(n=>n.id===id)
 
-	if(note) response.json(note)
-	else{
-		response.status(404).end()
-	}
+	// if(note) response.json(note)
+	// else{
+	// 	response.status(404).end()
+	// }
+	Note.findById(id).then(note=>{
+		if(note) response.json(note)
+		else response.status(404).end()
+	}).catch(error=>next(error))
 })
 
 const generateId = () => {
@@ -45,42 +59,75 @@ const generateId = () => {
   return String(maxId + 1)
 }
 
-app.post('/api/notes', (request, response) => {
+app.post('/api/notes', (request, response,next) => {
   const body = request.body
+  // console.log(body)
 
-  if (!body.content) {
-    return response.status(400).json({ 
-      error: 'content missing' 
+  // if (!body.content) {
+  //   return response.status(400).json({ 
+  //     error: 'content missing' 
+  //   })
+  // }
+
+  // const note = {
+  //   content: body.content,
+  //   important: Boolean(body.important) || false,
+  //   id: generateId(),
+  // }
+
+  // notes = notes.concat(note)
+
+  // response.json(note)
+  const note = new Note({
+    	content:body.content,
+    	important: body.important
     })
-  }
+  note.save().then(result=>{
+  	response.json(result)
+  }).catch(error=>next(error))
 
-  const note = {
-    content: body.content,
-    important: Boolean(body.important) || false,
-    id: generateId(),
-  }
-
-  notes = notes.concat(note)
-
-  response.json(note)
+})
+app.put('/api/notes/:id',(request,response,next)=>{
+	const body = request.body
+	const note = {
+		content:body.content,
+		important:body.important
+	}
+	Note.findByIdAndUpdate(request.params.id,note,{new:true}).then(updatedNote=>{
+		response.json(updatedNote)
+	}).catch(error=>next(error))
 })
 
-app.delete('/api/notes/:id',(request,response)=>{
+app.delete('/api/notes/:id',(request,response,next)=>{
 	const id = request.params.id
-	const note = notes.filter(n=>n.id!==id)
-	response.status(204).end()
+	// const note = notes.filter(n=>n.id!==id)
+	// response.status(204).end()
+	Note.findByIdAndDelete(id).then(result=>{
+		response.status(204).end()
+	}).catch(error=>next(error))
 })
 
-const port =3001
-app.listen(port,()=>{
-	console.log(`Server running on port ${port}`)
+
+const errorHandler = (error,request,response,next)=>{
+	console.error(error.message)
+	if(error.name === 'CaseError'){
+		return response.status(400).send({error:'malformatted id'})
+	}
+	next(error)
+}
+app.use(errorHandler)
+
+const unknownEndpoint = (request,response)=>{
+	response.status(404).send({error:'unknown endpoint.'})
+}
+app.use(unknownEndpoint)
+
+const PORT =process.env.PORT||3001
+app.listen(PORT,()=>{
+	console.log(`Server running on port ${PORT}`)
 })
 
 // const app = http.createServer((request,response)=>{
 // 	response.writeHead(200,{'Content-Type':'application/json'})
 // 	response.end(JSON.stringify(notes))
 // })
-
-// const port = 3001
-// app.listen(port)
-// console.log(`Server running on port ${port}`)

@@ -24,6 +24,16 @@
       "id": "6",
       "content": "newNote",
       "important": true
+    },
+    {
+      "id": "4a33",
+      "content": "newNote",
+      "important": false
+    },
+    {
+      "id": "ab07",
+      "content": "adds",
+      "important": false
     }
   ]
 }

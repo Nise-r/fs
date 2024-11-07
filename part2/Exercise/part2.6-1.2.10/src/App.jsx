@@ -85,7 +85,6 @@ const Form = ({persons, setPersons,newName, setNewName,newNumber,setNewNumber,se
 
     let flag = 0
     const toAdd = {
-      
       name: newName,
       number: newNumber      
     }
