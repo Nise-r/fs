@@ -28,7 +28,23 @@ app.get('/api/persons',(request,response,next)=>{
 	}).catch(error=>next(error))
 	// response.json(persons)
 })
+async function getCount() {
+  try {
+    const count = await Person.countDocuments();
+    // console.log('Number of entries:', count);
+    // console.log(count)
+    return `Number of entries: ${count}`
+  } catch (err) {
+  	return 'error'
+    console.error('Error counting documents:', err);
+  }
+}
+
+
 app.get('/api/info',(request,response,next)=>{
+	var persons = []
+	// console.log(Person.countDocuments({}).schema.obj)
+	console.log(getCount())
 	response.send(`<p>Phonebook has info for ${persons.length} people</p><p>${Date()}</p>`)
 })
 app.get('/api/persons/:id',(request,response,next)=>{
