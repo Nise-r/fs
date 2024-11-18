@@ -6,7 +6,8 @@
     "start": "cross-env NODE_ENV=production node index.js",
     "dev": "cross-env NODE_ENV=development nodemon index.js",
     "test": "cross-env NODE_ENV=test node --test",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "dist": "cd ../../part2/practice && sudo npm run build && cp -r dist ../../part4/practice && cd ../../part4/practice"
   },
   "author": "",
   "license": "ISC",
@@ -18,7 +19,8 @@
     "express": "^4.21.1",
     "express-async-errors": "^3.1.1",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.8.0"
+    "mongoose": "^8.8.0",
+    "react-router-dom": "^6.28.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.14.0",
